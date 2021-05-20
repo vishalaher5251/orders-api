@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-test-suite.xml" />
+	<munit:test name="implementation-test-suite-GETallOrdersFlowTest" doc:id="f05e73ba-f10b-4e2f-a2ee-64216fb06d72" description="Test">
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="e76a399f-bae8-4f2d-a8ae-cacd8b033aa0" />
+			<flow-ref doc:name="Flow-ref to GETallOrdersFlow" doc:id="82cb97c1-282b-41da-8d30-8ca813aeb330" name="GETallOrdersFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="18ac053c-1220-40c0-9beb-b191eb056d84" expression="#[payload]" is="#[MunitTools::notNullValue()]" message='"Null Payload Retrieved"'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-GETOrderbyIDFlowTest" doc:id="1f6264d3-5bff-4956-af3b-770df15fca2a" description="Test">
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="34b9670d-a4ae-4563-ab4c-b9af5cb9366a" />
+			<munit:set-event doc:name="Set Event" doc:id="f15b3f02-8ee1-4dcf-998d-c0f679c7abe6" >
+				<munit:variables >
+					<munit:variable key="ID" value="101" mediaType="application/json" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to GETOrderbyIDFlow" doc:id="0d70a268-69da-49fc-b5b3-fd7ab4b4a1ff" name="GETOrderbyIDFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="558d236a-3c39-483a-95f7-f4fdc88a17be" actual="#[payload]" expected='#[{&#10;        "orderNumber": 101,&#10;        "orderDate": "2020-04-02T00:00:00",&#10;        "requiredDate": "2020-04-10T00:00:00",&#10;        "shippedDate": "2020-04-10T00:00:00",&#10;        "orderStatus": "Delivered",&#10;        "customerNumber": 10001&#10; }]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-DELETEOrderbyIDFlowTest" doc:id="1a52e95b-593a-4f25-aba4-c104552857b4" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="50d7282b-5024-4152-a118-e58798d233c6" processor="db:delete">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="80aac845-4c67-411f-822b-6fddcfd4cffa" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="a1a43e86-d289-4993-9c79-9dd37dc0fc24" />
+			<flow-ref doc:name="Flow-ref to DELETEOrderbyIDFlow" doc:id="b2efaa0a-3056-4fdd-ab36-cd4dc6b621af" name="DELETEOrderbyIDFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="4fc53c15-0ff6-48ea-9b06-c5442921c9eb" actual="#[payload]" expected='#[{&#10;	message: "Order Deleted by ID."&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-VariableSub_FlowTest" doc:id="645a70b9-fa52-4c5e-8bcf-b04382062af0" description="Test">
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="3853e5c7-9054-46cf-8dcd-21c8e656f4ed" />
+			<munit:set-event doc:name="Set Event" doc:id="4984e026-94db-4a7a-909b-020731790f6e" >
+				<munit:payload value='{&#10;        "orderDate": "2020-04-02T00:00:00",&#10;        "requiredDate": "2020-04-10T00:00:00",&#10;        "shippedDate": "2020-04-10T00:00:00",&#10;        "orderStatus": "Delivered",&#10;        "customerNumber": 10001&#10;}' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to VariableSub_Flow" doc:id="da7186ec-b9f6-4c8a-9e0e-6e7a7088d0e3" name="VariableSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals OrderDate" doc:id="318da907-756b-4815-88a4-a17d5a61ebb2" actual="#[vars.orderDate]" expected='#["2020-04-02T00:00:00"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals RequiredDate" doc:id="a9d43cbc-4419-45de-9035-0ff3dcae08bb" actual="#[vars.requiredDate]" expected='#["2020-04-10T00:00:00"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals ShippedDate" doc:id="29ffa0eb-9e86-4798-9a1c-3dc8e3697258" actual="#[vars.shippedDate]" expected='#["2020-04-10T00:00:00"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals OrderStatus" doc:id="b6fb3db8-8f71-4e4f-a189-b1d8c2d651af" actual="#[vars.orderStatus]" expected='#["Delivered"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals CustomerNumber" doc:id="4da89d96-9f12-445d-8693-767a5e9d3cb2" actual="#[vars.customerNumber]" expected="#[10001]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-POSTOrderFlowTest" doc:id="7c43b274-9221-4f2f-8888-c410a1f46644" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="6a3a6f5c-956b-417a-bd37-479a6db0f2f5" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="500f20fd-44f3-4591-8d23-3e8fdf9cc63b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;		"affectedRows" : 1&#10;}]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="44619250-1be4-444f-a0d3-2e3f11e553d3" processor="db:query-single">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2dfd1b4a-e241-4708-85bf-2124e80774d4" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;	"max(orderNumber)": 101&#10;}]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="6cd12810-3bc0-4927-a127-c1c24afb8355" />
+			<munit:set-event doc:name="Set Event" doc:id="5b04708d-c163-4b47-8b99-b7665c2e3a58" >
+				<munit:payload value='{&#10;        "orderDate": "2020-04-02T00:00:00",&#10;        "requiredDate": "2020-04-10T00:00:00",&#10;        "shippedDate": "2020-04-10T00:00:00",&#10;        "orderStatus": "Delivered",&#10;        "customerNumber": 10001&#10;}' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to POSTOrderFlow" doc:id="e05ce2ab-ff22-430d-9638-5b636a4d5140" name="POSTOrderFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="4398c3af-2353-4ba5-8fde-1da873c98413" actual="#[payload]" expected='#[{&#10;	message: "Added new Order with OrderNumber: 101"&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-POSTOrderFlowTest1" doc:id="389ee5e3-47d7-4230-bb7d-33aa3a0e5820" description="Test">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock when" doc:id="ea592f63-68b9-4cf0-afb4-30039db0ab67" processor="db:insert">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="500f20fd-44f3-4591-8d23-3e8fdf9cc63b" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;		"affectedRows" : 0&#10;}]' mediaType="application/java" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-null-payload doc:name="Set null payload" doc:id="11563e68-5293-4467-a640-fba45f906202" />
+				<munit:set-event doc:name="Set Event" doc:id="aff08a25-0e5f-4a6c-926c-7e0201869ddc">
+					<munit:payload value='{&#10;        "orderDate": "2020-04-02T00:00:00",&#10;        "requiredDate": "2020-04-10T00:00:00",&#10;        "shippedDate": "2020-04-10T00:00:00",&#10;        "orderStatus": "Delivered",&#10;        "customerNumber": 10001&#10;}' mediaType="application/json" />
+				</munit:set-event>
+				<flow-ref doc:name="Flow-ref to POSTOrderFlow" doc:id="3aace795-b373-4955-893c-c2030bb32131" name="POSTOrderFlow" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-equals doc:name="Assert equals" doc:id="4542cea3-e191-4fc8-ae70-3bbd287ea65c" actual="#[payload]" expected='#[{&#10;	message: "Order not inserted into Database. Please try again."&#10;}]' />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="implementation-test-suite-PATCHOrderbyIDFlowTest1" doc:id="1d5c20e1-fd38-4f6a-a433-956ab1b601c0" description="Test">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock when" doc:id="5e975d98-babc-407f-a99e-912155465533" processor="db:update">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="cd36f24e-05ab-4fbe-9ded-8a1c3fdecdc6" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value='#[{&#10;		"affectedRows": 0&#10;}]' mediaType="application/java" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-null-payload doc:name="Set null payload" doc:id="4162a520-eb7c-4712-a87d-9d62b5356166" />
+				<munit:set-event doc:name="Set Event" doc:id="ea44aa70-ab30-4927-85c4-0da452c43f2b">
+					<munit:payload value='{&#10;        "orderDate": "2020-04-02T00:00:00",&#10;        "requiredDate": "2020-04-10T00:00:00",&#10;        "shippedDate": "2020-04-10T00:00:00",&#10;        "orderStatus": "Delivered",&#10;        "customerNumber": 10001&#10;}' mediaType="application/json" />
+					<munit:variables>
+						<munit:variable key="ID" value="101" mediaType="application/json" />
+					</munit:variables>
+				</munit:set-event>
+				<flow-ref doc:name="Flow-ref to PATCHOrderbyIDFlow" doc:id="5ef42bee-5d96-48e2-9990-07480fa4d30f" name="PATCHOrderbyIDFlow" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-equals doc:name="Assert equals" doc:id="3ff3c36f-6d84-4432-8d7d-cabecb91556d" actual="#[payload]" expected='#[{&#10;	message: "Error occurred while Updating using PATCH."&#10;}]' />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="implementation-test-suite-PATCHOrderbyIDFlowTest" doc:id="7e92c372-0aff-4377-baca-cb367a43abfd" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="8eee4c3d-94ba-43a7-85d1-b24097164aae" processor="db:update">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="cd36f24e-05ab-4fbe-9ded-8a1c3fdecdc6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value='#[{&#10;		"affectedRows": 1&#10;}]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-null-payload doc:name="Set null payload" doc:id="144d53ff-3aa7-4785-970f-2009cb230140" />
+			<munit:set-event doc:name="Set Event" doc:id="908acbb6-36e3-40a6-8656-cd761f11f722">
+				<munit:payload value='{&#10;        "orderDate": "2020-04-02T00:00:00",&#10;        "requiredDate": "2020-04-10T00:00:00",&#10;        "shippedDate": "2020-04-10T00:00:00",&#10;        "orderStatus": "Delivered",&#10;        "customerNumber": 10001&#10;}' mediaType="application/json" />
+				<munit:variables>
+					<munit:variable key="ID" value="101" mediaType="application/json" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to PATCHOrderbyIDFlow" doc:id="ddc6cebf-b705-4396-930a-98cd43f0fda0" name="PATCHOrderbyIDFlow" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="e8899c40-6328-4109-9725-7ecffbb2d024" actual="#[payload]" expected='#[{&#10;	message: "Order Updated by ID using PATCH."&#10;}]' />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-PUTOrderbyIDFlowTest1" doc:id="e64ed946-2c71-4d89-a983-2fc7215ef2b8" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="68c83430-f9a0-49fd-ba0b-2af9ab5378a5" processor="db:insert">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="2d4b9e9c-9839-41f4-9fbc-78e4e3e241b9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2a13975f-5d23-4620-85cc-52ac77bc216c" processor="db:query-single">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="ed7b6ceb-e809-4d8b-8a2a-b6316bd92b0f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value='#[{&#10;		"max(orderNumber)": 115&#10;}]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-null-payload doc:name="Set null payload" doc:id="8968afc8-5edf-4e55-8275-e5f097a747b9" />
+			<munit:set-event doc:name="Set Event" doc:id="e24ac6cb-16d8-4365-b389-c08a3bdef6a2">
+				<munit:payload value='{&#10;        "orderDate": "2020-04-02T00:00:00",&#10;        "requiredDate": "2020-04-10T00:00:00",&#10;        "shippedDate": "2020-04-10T00:00:00",&#10;        "orderStatus": "Delivered",&#10;        "customerNumber": 10001&#10;}' mediaType="application/json" />
+				<munit:variables>
+					<munit:variable key="ID" value="115" mediaType="application/json" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to PUTOrderbyIDFlow" doc:id="07ccdcdc-04b3-4350-8064-9474b14b2dab" name="PUTOrderbyIDFlow" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="f71c4107-de61-4518-b1a5-a2ef6af23d54" actual="#[payload]" expected='#[{&#10;	message: "Added new Order with OrderNumber: 115"&#10;}]' />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-PUTOrderbyIDFlowTest" doc:id="b9fd5cf4-4d8f-44bd-ad32-325d9a4163f8" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d8991d2b-9863-4d29-81ce-699d5e54d409" processor="db:update">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="703eeb52-b183-4ad8-bc74-fcc2d812e98e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-null-payload doc:name="Set null payload" doc:id="d52f3c17-cc27-488f-8b40-b75b9fe1c59c" />
+			<munit:set-event doc:name="Set Event" doc:id="0947fcb3-0f71-431f-9c1d-20c9733f4b53">
+				<munit:payload value='{&#10;        "orderDate": "2020-04-02T00:00:00",&#10;        "requiredDate": "2020-04-10T00:00:00",&#10;        "shippedDate": "2020-04-10T00:00:00",&#10;        "orderStatus": "Delivered",&#10;        "customerNumber": 10001&#10;}' mediaType="application/json" />
+				<munit:variables>
+					<munit:variable key="ID" value="101" mediaType="application/json" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to PUTOrderbyIDFlow" doc:id="eb4383db-fff1-4c3d-a6ce-7ef77ec09b9a" name="PUTOrderbyIDFlow" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="b41f8595-c240-4eb1-b4bf-407ef30347d7" actual="#[payload]" expected='#[{&#10;	message: "Order Data with given ID Updated using PUT."&#10;}]' />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-GETOrderbyIDFlowTest1" doc:id="68a564c1-3cda-48bb-a975-2f7830e6da4b" description="Test">
+			<munit:execution>
+				<munit:set-null-payload doc:name="Set null payload" doc:id="caecc817-fbd3-40bc-b5a6-1f41b76fdac3" />
+				<munit:set-event doc:name="Set Event" doc:id="7a65d4c3-1ab2-43ca-a40e-6951b268a911">
+				<munit:variables >
+					<munit:variable key="ID" value="140" mediaType="application/json" />
+				</munit:variables>
+				</munit:set-event>
+				<flow-ref doc:name="Flow-ref to GETOrderbyIDFlow" doc:id="14a9d2fe-3a54-42d7-8210-9a84eda9728d" name="GETOrderbyIDFlow" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-equals doc:name="Assert equals" doc:id="703cbd27-9ace-4601-9b34-5af8617650c4" actual="#[payload]" expected='#[{&#10;	message: "Please enter a valid ID."&#10;}]' />
+			</munit:validation>
+		</munit:test>
+
+
+</mule>

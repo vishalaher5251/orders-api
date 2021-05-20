@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="getAllOrders" format="json">
+      <types:shape format="weave" example="examples/getAllOrders.json"><![CDATA[%dw 2.0
+
+type getAllOrders = Array<{|  orderNuber: Number {"typeId": "int"},   orderDate: String,   requiredDate: String,   shippedDate: String,   orderStatus: String,   customerNumber: Number {"typeId": "int"}|}> {"example": "[{\\\"orderNuber\\\":101,\\\"orderDate\\\":\\\"2020-04-10\\\",\\\"requiredDate\\\":\\\"2020-04-17\\\",\\\"shippedDate\\\":\\\"2020-04-16\\\",\\\"orderStatus\\\":\\\"Delevered\\\",\\\"customerNumber\\\":10001},{\\\"orderNuber\\\":102,\\\"orderDate\\\":\\\"2020-04-10\\\",\\\"requiredDate\\\":\\\"2020-04-10\\\",\\\"shippedDate\\\":\\\"2020-04-10\\\",\\\"orderStatus\\\":\\\"Delevered\\\",\\\"customerNumber\\\":10002}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="getOrderByID" format="json">
+      <types:shape format="weave" example="examples/getOrderByID.json"><![CDATA[%dw 2.0
+
+type getOrderByID = {|
+  orderNuber: Number {"typeId": "int"}, 
+  orderDate: String, 
+  requiredDate: String, 
+  shippedDate: String, 
+  orderStatus: String, 
+  customerNumber: Number {"typeId": "int"}
+|} {"example": "{\\\"orderNuber\\\":101,\\\"orderDate\\\":\\\"2020-04-10\\\",\\\"requiredDate\\\":\\\"2020-04-17\\\",\\\"shippedDate\\\":\\\"2020-04-16\\\",\\\"orderStatus\\\":\\\"Delevered\\\",\\\"customerNumber\\\":10001}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#5855e473-8661-4687-9a53-bb26a53e2e61">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="getAllOrders"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#068c2a8b-6126-4ed2-9789-3f71d8332b1d">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="getOrderByID"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
